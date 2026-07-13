@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Markuply — Turn AI mockups into live Shopify pages</title>
+<meta name="description" content="Paste HTML from ChatGPT, Claude, Gemini, or Grok and Markuply turns it into a clean, branded, mobile-ready Shopify page — images replaced, links mapped, forms working.">
+<meta property="og:title" content="Markuply — Turn AI mockups into live Shopify pages">
+<meta property="og:description" content="From AI-generated HTML to a publish-ready Shopify page in minutes. Assets replaced, links mapped, branding applied, mobile fixed.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f172a;
+    --ink-soft: #475569;
+    --brand: #4f46e5;
+    --brand-dark: #3730a3;
+    --accent: #10b981;
+    --paper: #ffffff;
+    --mist: #f8fafc;
+    --line: #e2e8f0;
+    --radius: 14px;
+    --shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif; line-height: 1.12; margin: 0 0 16px; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(28px, 4vw, 40px); }
+  p { margin: 0 0 16px; }
+  a { color: var(--brand); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  .kicker { display: inline-block; font-weight: 700; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); margin-bottom: 12px; }
+  .btn {
+    display: inline-block; padding: 14px 28px; border-radius: 10px; font-weight: 600;
+    text-decoration: none; transition: transform 0.15s ease, box-shadow 0.15s ease; border: none; cursor: pointer; font-size: 16px;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35); }
+  .btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+  .btn-light { background: #fff; color: var(--brand-dark); }
+  section { padding: 88px 0; }
+  .section-head { max-width: 640px; margin: 0 auto 48px; text-align: center; }
+  .section-head p { color: var(--ink-soft); font-size: 18px; }
+
+  /* ---- Announcement bar ---- */
+  .announce {
+    background: linear-gradient(90deg, var(--brand-dark), var(--brand) 55%, #6d28d9);
+    color: #e0e7ff; text-align: center; padding: 10px 16px; font-size: 14px; font-weight: 500;
+  }
+  .announce strong { color: #fff; }
+
+  /* ---- Header ---- */
+  header.site {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav { display: flex; align-items: center; gap: 28px; padding: 16px 24px; max-width: 1120px; margin: 0 auto; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 21px; color: var(--ink); text-decoration: none; }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--brand), var(--accent)); color: #fff; font-size: 15px; font-weight: 700;
+  }
+  .nav-links { display: flex; gap: 24px; margin-left: auto; }
+  .nav-links a { color: var(--ink-soft); text-decoration: none; font-weight: 500; font-size: 15px; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav .btn { padding: 10px 20px; font-size: 15px; }
+
+  /* ---- Hero ---- */
+  .hero {
+    background:
+      radial-gradient(900px 420px at 15% -10%, rgba(79, 70, 229, 0.28), transparent 60%),
+      radial-gradient(700px 380px at 90% 0%, rgba(16, 185, 129, 0.18), transparent 55%),
+      var(--ink);
+    color: #e2e8f0; padding: 96px 0 104px;
+  }
+  .hero .wrap { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
+  .hero h1 { font-size: clamp(34px, 5vw, 56px); color: #fff; }
+  .hero h1 em { font-style: normal; background: linear-gradient(90deg, #a5b4fc, #6ee7b7); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.lede { font-size: 19px; color: #cbd5e1; max-width: 480px; }
+  .hero-ctas { display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+  .hero-note { margin-top: 14px; font-size: 14px; color: #94a3b8; }
+  .hero .btn-ghost { color: #e2e8f0; border-color: #334155; }
+
+  /* Hero visual: before -> after */
+  .demo { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; }
+  .win { background: #0b1222; border: 1px solid #1e293b; border-radius: 12px; overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45); }
+  .win-bar { display: flex; gap: 6px; padding: 10px 12px; border-bottom: 1px solid #1e293b; }
+  .win-bar i { width: 10px; height: 10px; border-radius: 50%; background: #334155; }
+  .win-body { padding: 14px; display: grid; gap: 8px; }
+  .code-line { height: 9px; border-radius: 4px; background: #24324a; }
+  .code-line.c1 { width: 88%; background: #3b4f75; }
+  .code-line.c2 { width: 70%; }
+  .code-line.c3 { width: 94%; background: #34557a; }
+  .code-line.c4 { width: 55%; background: #4c3f78; }
+  .code-line.c5 { width: 78%; }
+  .code-line.c6 { width: 64%; background: #3b4f75; }
+  .arrow { font-size: 26px; color: #6ee7b7; font-weight: 700; }
+  .page-hero { height: 46px; border-radius: 8px; background: linear-gradient(120deg, #4f46e5, #7c3aed); }
+  .page-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .page-card { height: 38px; border-radius: 7px; background: #1c2a44; border: 1px solid #253552; }
+  .page-btn { height: 14px; width: 45%; border-radius: 7px; background: #10b981; margin: 2px auto 0; }
+  .win-label { text-align: center; font-size: 12.5px; color: #94a3b8; padding: 8px 0 12px; letter-spacing: 0.04em; }
+
+  /* ---- Cards ---- */
+  .cards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .card {
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 26px 24px; box-shadow: var(--shadow); transition: transform 0.15s ease;
+  }
+  .card:hover { transform: translateY(-3px); }
+  .card .ico { width: 44px; height: 44px; border-radius: 11px; display: grid; place-items: center; font-size: 21px; margin-bottom: 14px; background: #eef2ff; }
+  .card h3 { font-size: 18px; margin-bottom: 8px; }
+  .card p { color: var(--ink-soft); font-size: 15px; margin: 0; }
+
+  /* ---- Promotions / pricing ---- */
+  .promo { background: var(--mist); }
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 880px; margin: 0 auto; }
+  .plan { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 34px 30px; box-shadow: var(--shadow); position: relative; }
+  .plan.pro { border: 2px solid var(--brand); }
+  .plan .flag {
+    position: absolute; top: -13px; left: 30px; background: var(--brand); color: #fff;
+    font-size: 12.5px; font-weight: 700; padding: 4px 12px; border-radius: 999px; letter-spacing: 0.04em;
+  }
+  .price { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700; }
+  .price small { font-size: 16px; color: var(--ink-soft); font-weight: 500; }
+  .plan ul { list-style: none; padding: 0; margin: 20px 0 26px; }
+  .plan li { padding: 8px 0 8px 30px; position: relative; color: var(--ink-soft); border-bottom: 1px solid #f1f5f9; font-size: 15.5px; }
+  .plan li::before { content: "✓"; position: absolute; left: 4px; color: var(--accent); font-weight: 700; }
+  .plan li.no::before { content: "—"; color: #cbd5e1; }
+  .plan .btn { width: 100%; text-align: center; }
+
+  /* ---- Importance ---- */
+  .importance .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .importance h2 { margin-bottom: 20px; }
+  .importance p { color: var(--ink-soft); font-size: 17px; }
+  .pain { display: grid; gap: 14px; }
+  .pain-item { display: flex; gap: 14px; background: var(--mist); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+  .pain-item .pi { font-size: 22px; line-height: 1.2; }
+  .pain-item strong { display: block; margin-bottom: 2px; }
+  .pain-item span { color: var(--ink-soft); font-size: 14.5px; }
+
+  /* ---- Features ---- */
+  .features { background: var(--ink); color: #e2e8f0; }
+  .features h2, .features h3 { color: #fff; }
+  .features .section-head p { color: #94a3b8; }
+  .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .feat { background: #131c31; border: 1px solid #24324a; border-radius: 12px; padding: 22px 20px; }
+  .feat h3 { font-size: 16.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .feat p { color: #94a3b8; font-size: 14.5px; margin: 0; }
+  .pro-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; background: rgba(110, 231, 183, 0.14); color: #6ee7b7; padding: 3px 8px; border-radius: 999px; }
+
+  /* ---- Install ---- */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; counter-reset: step; }
+  .step { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 22px; box-shadow: var(--shadow); counter-increment: step; }
+  .step::before {
+    content: counter(step); display: grid; place-items: center; width: 38px; height: 38px;
+    border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; font-family: 'Space Grotesk', sans-serif; margin-bottom: 14px;
+  }
+  .step h3 { font-size: 17px; margin-bottom: 6px; }
+  .step p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }
+
+  /* ---- FAQ ---- */
+  .faq { background: var(--mist); }
+  .faq-list { max-width: 760px; margin: 0 auto; }
+  .faq details { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; margin-bottom: 12px; }
+  .faq summary { font-weight: 600; cursor: pointer; font-size: 16.5px; }
+  .faq details p { color: var(--ink-soft); margin: 12px 0 0; font-size: 15.5px; }
+
+  /* ---- Final CTA ---- */
+  .cta-band { background: linear-gradient(120deg, var(--brand-dark), var(--brand) 55%, #6d28d9); color: #fff; text-align: center; }
+  .cta-band h2 { color: #fff; }
+  .cta-band p { color: #c7d2fe; font-size: 18px; max-width: 540px; margin: 0 auto 28px; }
+
+  /* ---- Footer ---- */
+  footer.site { background: var(--ink); color: #94a3b8; padding: 56px 0 32px; }
+  .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 36px; }
+  footer .logo { color: #fff; margin-bottom: 12px; }
+  footer h4 { color: #e2e8f0; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 14px; }
+  footer a { color: #94a3b8; text-decoration: none; display: block; padding: 4px 0; font-size: 15px; }
+  footer a:hover { color: #fff; }
+  .social { display: flex; gap: 12px; margin-top: 16px; }
+  .social a {
+    width: 38px; height: 38px; border-radius: 10px; border: 1px solid #24324a;
+    display: grid; place-items: center; font-size: 16px; padding: 0;
+  }
+  .foot-base { border-top: 1px solid #1e293b; padding-top: 24px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 14px; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 920px) {
+    section { padding: 64px 0; }
+    .hero .wrap, .importance .wrap { grid-template-columns: 1fr; gap: 40px; }
+    .cards-grid { grid-template-columns: 1fr 1fr; }
+    .feat-grid { grid-template-columns: 1fr 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 600px) {
+    .cards-grid, .feat-grid, .steps, .plans { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr; gap: 24px; }
+    .demo { grid-template-columns: 1fr; }
+    .arrow { text-align: center; transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Announcement bar -->
+<div class="announce">
+  🚀 <strong>Launch offer:</strong> convert your first 3 pages free — no card, no time limit.
+</div>
+
+<!-- Header -->
+<header class="site">
+  <nav class="nav">
+    <a class="logo" href="#top"><span class="logo-mark">M</span>Markuply</a>
+    <div class="nav-links">
+      <a href="#cards">Why Markuply</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#install">Install</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a class="btn btn-primary" href="#install">Install on Shopify</a>
+  </nav>
+</header>
+
+<!-- Hero banner -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <h1>Turn AI mockups into <em>live Shopify pages</em> in minutes</h1>
+      <p class="lede">
+        ChatGPT, Claude, Gemini, and Grok write beautiful pages — full of placeholder
+        images, dead links, and forms that go nowhere. Markuply finds every one of
+        them and maps them to your real store.
+      </p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#install">Install on Shopify</a>
+        <a class="btn btn-ghost" href="#install">See how it works</a>
+      </div>
+      <p class="hero-note">3 free conversions · works with any AI tool · nothing touches your theme</p>
+    </div>
+    <div class="demo" aria-hidden="true">
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i></div>
+        <div class="win-body">
+          <div class="code-line c1"></div>
+          <div class="code-line c2"></div>
+          <div class="code-line c3"></div>
+          <div class="code-line c4"></div>
+          <div class="code-line c5"></div>
+          <div class="code-line c6"></div>
+        </div>
+        <div class="win-label">AI-generated HTML</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="win">
+        <div class="win-bar"><i></i><i></i><i></i></div>
+        <div class="win-body">
+          <div class="page-hero"></div>
+          <div class="page-row">
+            <div class="page-card"></div>
+            <div class="page-card"></div>
+            <div class="page-card"></div>
+          </div>
+          <div class="page-btn"></div>
+        </div>
+        <div class="win-label">Your Shopify page</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Cards -->
+<section id="cards">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Why Markuply</span>
+      <h2>Everything the AI faked, made real</h2>
+      <p>One pass over your pasted HTML finds every placeholder — then gives you the tools to fix all of it in one place.</p>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="ico">🔍</div>
+        <h3>Detect everything</h3>
+        <p>Images, background art, dead links, non-working forms, fonts, colors — even repeating product grids — found automatically.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🔗</div>
+        <h3>Map to your store</h3>
+        <p>Point placeholder cards and links at real products, collections, and pages with search pickers and fuzzy auto-matching.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🎨</div>
+        <h3>Brand & mobile-ready</h3>
+        <p>Match your theme's fonts and colors, then let the mobile readiness score and one-click fixes handle small screens.</p>
+      </div>
+      <div class="card">
+        <div class="ico">🛡️</div>
+        <h3>Publish with confidence</h3>
+        <p>Scripts stripped, CSS scoped so your theme is untouched, a pre-publish checklist — and version rollback if you change your mind.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Promotions / pricing -->
+<section class="promo" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Simple pricing</span>
+      <h2>Start free. Upgrade when it clicks.</h2>
+      <p>The free trial runs the full conversion flow on 3 pages — no card, no countdown.</p>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Free trial</h3>
+        <div class="price">$0</div>
+        <ul>
+          <li>3 page conversions (lifetime)</li>
+          <li>Full detection: assets, links, forms, colors</li>
+          <li>Asset replacement & image optimization</li>
+          <li>Link mapping to real store pages</li>
+          <li>Security cleanup & pre-publish review</li>
+          <li>Free starter templates</li>
+          <li class="no">AI features, theme match, product mapping</li>
+        </ul>
+        <a class="btn btn-ghost" href="#install">Try it free</a>
+      </div>
+      <div class="plan pro">
+        <span class="flag">MOST POPULAR</span>
+        <h3>Pro</h3>
+        <div class="price">$18.99<small>/month</small></div>
+        <ul>
+          <li>Unlimited page conversions</li>
+          <li>Working newsletter & contact forms</li>
+          <li>One-click theme match + saved presets</li>
+          <li>Product card mapping with auto-match</li>
+          <li>AI alt text & asset labels</li>
+          <li>Automatic mobile fixes</li>
+          <li>Unlimited version history & rollback</li>
+        </ul>
+        <a class="btn btn-primary" href="#install">Go Pro</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- App importance -->
+<section class="importance">
+  <div class="wrap">
+    <div>
+      <span class="kicker">Why it matters</span>
+      <h2>The gap between “looks done” and “is done”</h2>
+      <p>
+        AI page builders got everyone 80% of the way. The last 20% — the part
+        merchants actually get judged on — is where pages quietly fail:
+        placeholder images ship to production, “#” links frustrate real
+        customers, and a page that looked perfect on a laptop collapses on the
+        phone where most of your traffic lives.
+      </p>
+      <p>
+        Markuply exists for that last 20%. It treats your mockup like a
+        pre-flight checklist: nothing gets published until every placeholder
+        has been seen, decided on, and resolved.
+      </p>
+    </div>
+    <div class="pain">
+      <div class="pain-item"><div class="pi">🖼️</div><div><strong>Placeholder images ship</strong><span>placehold.co URLs look fine in preview — then load on your live store.</span></div></div>
+      <div class="pain-item"><div class="pi">⛓️</div><div><strong>Dead links leak</strong><span>Every "#" button is a customer hitting a wall on a page you paid to design.</span></div></div>
+      <div class="pain-item"><div class="pi">📱</div><div><strong>Desktop-only layouts</strong><span>Fixed widths and 3-column grids break exactly where most buyers are: on phones.</span></div></div>
+      <div class="pain-item"><div class="pi">⚠️</div><div><strong>Unsafe markup</strong><span>AI output can carry scripts and handlers you'd never knowingly paste into your store.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Functions and features -->
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker" style="color:#6ee7b7">Functions & features</span>
+      <h2>A full conversion pipeline, not a paste box</h2>
+      <p>Every step from raw AI output to a page you'd proudly publish.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat"><h3>Mockup analysis</h3><p>One click detects every image, background, dead link, form, font, and color in your pasted HTML.</p></div>
+      <div class="feat"><h3>Asset replacement</h3><p>Swap placeholders for uploads or store files — with automatic WebP conversion, resizing, and lazy loading.</p></div>
+      <div class="feat"><h3>Link mapping</h3><p>Search pickers point every dead link at real products, collections, and pages.</p></div>
+      <div class="feat"><h3>Form fixing <span class="pro-tag">PRO</span></h3><p>Placeholder forms become working newsletter signups — or get removed cleanly.</p></div>
+      <div class="feat"><h3>Theme match <span class="pro-tag">PRO</span></h3><p>Reads your published theme's fonts and colors and applies them in one click. Save presets for every future page.</p></div>
+      <div class="feat"><h3>Product card mapping <span class="pro-tag">PRO</span></h3><p>Detected product grids bind to real products — image, title, price, and link together, with fuzzy auto-match.</p></div>
+      <div class="feat"><h3>Mobile readiness</h3><p>A 0–100 score flags desktop-only patterns; Pro applies safe automatic fixes with a before/after preview.</p></div>
+      <div class="feat"><h3>AI alt text & labels <span class="pro-tag">PRO</span></h3><p>AI writes image alt text and labels each asset's role — hero, logo, testimonial — so mapping goes faster.</p></div>
+      <div class="feat"><h3>Starter templates</h3><p>13 responsive, conversion-tested page templates that drop straight into the converter.</p></div>
+      <div class="feat"><h3>Security cleanup</h3><p>Scripts, inline handlers, and unsafe embeds stripped automatically — with a transparent report of what was removed.</p></div>
+      <div class="feat"><h3>Scoped CSS output</h3><p>Generated styles are wrapped and prefixed so they can never leak into (or break) your theme.</p></div>
+      <div class="feat"><h3>Version history</h3><p>Every publish is snapshotted. Preview, restore, or roll a live page back with one click.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- How to install -->
+<section id="install">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Getting started</span>
+      <h2>How to install on Shopify</h2>
+      <p>From the App Store to your first converted page in about five minutes.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h3>Install the app</h3>
+        <p>Find Markuply on the Shopify App Store and click Install. It appears in your admin's Apps section.</p>
+      </div>
+      <div class="step">
+        <h3>Grab your mockup</h3>
+        <p>Use the built-in prompt generator with your favorite AI tool — or skip straight to a starter template.</p>
+      </div>
+      <div class="step">
+        <h3>Paste & map</h3>
+        <p>Paste the HTML, hit Analyze, and work through the tabs: assets, links, forms, products, branding.</p>
+      </div>
+      <div class="step">
+        <h3>Review & publish</h3>
+        <p>Pass the checklist, preview at phone width, generate the clean HTML, and put it live on your store.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">FAQ</span>
+      <h2>Questions, answered</h2>
+    </div>
+    <div class="faq-list">
+      <details>
+        <summary>Do I need to know how to code?</summary>
+        <p>No. You paste HTML the AI wrote and make every decision through visual controls — pickers, buttons, and previews. You never edit code by hand (though the clean output is there if you want it).</p>
+      </details>
+      <details>
+        <summary>Which AI tools does it work with?</summary>
+        <p>Any tool that outputs HTML — ChatGPT, Claude, Gemini, and Grok are what it's tuned for, and the built-in prompt generator writes an optimized prompt for each of them.</p>
+      </details>
+      <details>
+        <summary>Will it affect my theme?</summary>
+        <p>No. Generated CSS is scoped inside a unique wrapper, so the page's styles physically can't leak into your theme — and your theme's styles are reset inside the page block.</p>
+      </details>
+      <details>
+        <summary>What exactly is free?</summary>
+        <p>Three full page conversions, forever — the complete detect → map → brand → review flow, with no card and no expiry. Pro ($18.99/month) removes the cap and unlocks the power features: working forms, theme match, product mapping, AI alt text, mobile auto-fixes, and unlimited version history.</p>
+      </details>
+      <details>
+        <summary>What if I publish something and regret it?</summary>
+        <p>Every publish is snapshotted to version history. You can preview any earlier version and roll the live page back to it with one click.</p>
+      </details>
+      <details>
+        <summary>Is the AI-generated HTML safe to put on my store?</summary>
+        <p>Markuply strips scripts, inline event handlers, and unsafe embeds automatically before anything is generated — and shows you a report of exactly what was removed.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="cta-band">
+  <div class="wrap">
+    <h2>Your next page is already written.</h2>
+    <p>Let the AI do the drafting — Markuply makes it real. First three pages are on us.</p>
+    <a class="btn btn-light" href="#install">Install Markuply on Shopify</a>
+  </div>
+</section>
+
+<!-- Footer with social links -->
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="#top"><span class="logo-mark">M</span>Markuply</a>
+        <p style="font-size:15px; max-width:300px;">Turn AI-generated mockups into clean, branded, mobile-ready Shopify pages.</p>
+        <div class="social">
+          <a href="#" aria-label="X (Twitter)">𝕏</a>
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="YouTube">▶</a>
+          <a href="#" aria-label="TikTok">♪</a>
+        </div>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#install">How to install</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <a href="mailto:digitalgenesis2021@gmail.com">Contact support</a>
+        <a href="#">Privacy policy</a>
+        <a href="#">Terms of service</a>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Markuply · Digital Genesis</span>
+      <span>Built for Shopify merchants</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
