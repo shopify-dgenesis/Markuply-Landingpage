@@ -25,8 +25,8 @@
   header.site { border-bottom: 1px solid var(--line); }
   .nav { display: flex; align-items: center; gap: 16px; padding: 16px 24px; max-width: 1120px; margin: 0 auto; }
   .logo { display: flex; align-items: center; gap: 10px; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 21px; color: var(--ink); text-decoration: none; }
-  .logo-mark { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; flex-shrink: 0; background: linear-gradient(135deg, var(--brand), var(--blue)); color: #fff; }
-  .logo-mark svg { width: 20px; height: 20px; }
+  .logo-mark { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; overflow: hidden; background: linear-gradient(135deg, #f1eefd, #e6f7fa); }
+  .logo-mark img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; transform: scale(1.35); }
   .nav a.back { margin-left: auto; color: var(--ink-soft); text-decoration: none; font-weight: 500; font-size: 15px; }
   main { padding: 56px 0 80px; }
   h1 { font-size: clamp(30px, 4vw, 40px); margin: 0 0 8px; }
@@ -44,7 +44,7 @@
 
 <header class="site">
   <nav class="nav">
-    <a class="logo" href="/"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="4" r="1.6" fill="currentColor"/><line x1="12" y1="5.6" x2="12" y2="8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="5" y="8" width="14" height="12" rx="6" fill="currentColor"/><circle cx="9.3" cy="14" r="1.7" fill="#0B1220"/><circle cx="14.7" cy="14" r="1.7" fill="#0B1220"/></svg></span>Markuply</a>
+    <a class="logo" href="/"><span class="logo-mark"><img src="/assets/logo-mark.png" alt="Markuply"></span>Markuply</a>
     <a class="back" href="/">← Back to home</a>
   </nav>
 </header>
